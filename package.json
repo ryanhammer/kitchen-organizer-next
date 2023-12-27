@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:db:setup": "prisma generate && prisma migrate dev && prisma db seed",
+    "dev:setup": "prisma generate && prisma migrate dev && prisma db seed",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup": "prisma generate && prisma migrate deploy && prisma db seed"
+    "prod:setup": "prisma generate && prisma migrate deploy && prisma db seed"
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",

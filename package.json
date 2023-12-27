@@ -8,6 +8,7 @@
     "dev:db:apply-new-migrations": "prisma migrate dev",
     "build": "next build",
     "start": "next start",
+    "format": "npx @biomejs/biome format --write ./src",
     "lint": "next lint",
     "prod:db:setup": "prisma generate && prisma migrate deploy && prisma db seed"
   },
@@ -21,6 +22,7 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.4.1",
     "@faker-js/faker": "^8.3.1",
     "@graphql-codegen/cli": "^5.0.0",
     "@types/bcryptjs": "^2.4.6",

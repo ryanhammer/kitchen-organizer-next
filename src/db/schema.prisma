@@ -11,23 +11,34 @@ model User {
   id           String       @id @default(uuid())
   firstName    String       @map("first_name")
   lastName     String       @map("last_name")
+  username     String       @unique
   email        String       @unique
   password     String
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
-  ingredients  Ingredient[]
+  pantryIngredients  PantryIngredient[]
   recipes      Recipe[]
   mealPlans    MealPlan[]
 }
 
 model Ingredient {
+  id                String       @id @default(uuid())
+  name              String
+  apiId             String
+  pantryIngredients PantryIngredient[]
+  recipeIngredients RecipeIngredient[]
+}
+
+model PantryIngredient {
   id            String       @id @default(uuid())
-  name          String
-  quantity      String
+  ingredientId  String
   userId        String       @map("user_id")
+  quantity      String
   expirationDate DateTime?   @default(now()) @map("expiration_date")
   user          User         @relation(fields: [userId], references: [id])
-  RecipeIngredient RecipeIngredient[]
+  ingredient    Ingredient   @relation(fields: [ingredientId], references: [id])
+
+  @@map("pantry_ingredient")
 }
 
 model Recipe {

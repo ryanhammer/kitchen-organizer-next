@@ -24,14 +24,14 @@ model User {
 model Ingredient {
   id                String       @id @default(uuid())
   name              String
-  apiId             String
+  apiId             String       @map("api_id")
   pantryIngredients PantryIngredient[]
   recipeIngredients RecipeIngredient[]
 }
 
 model PantryIngredient {
   id            String       @id @default(uuid())
-  ingredientId  String
+  ingredientId  String       @map("ingredient_id")
   userId        String       @map("user_id")
   quantity      String
   expirationDate DateTime?   @default(now()) @map("expiration_date")
@@ -47,8 +47,8 @@ model Recipe {
   description   String
   instructions  String[]
   userId        String            @map("user_id")
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
   user          User              @relation(fields: [userId], references: [id])
   recipeIngredients RecipeIngredient[]
   mealPlans     MealPlan[]

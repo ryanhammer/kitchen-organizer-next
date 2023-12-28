@@ -8,70 +8,71 @@ generator client {
 }
 
 model User {
-  id           String       @id @default(uuid())
-  firstName    String       @map("first_name")
-  lastName     String       @map("last_name")
-  username     String       @unique
-  email        String       @unique
-  password     String
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  pantryIngredients  PantryIngredient[]
-  recipes      Recipe[]
-  mealPlans    MealPlan[]
+  id                String             @id @default(uuid())
+  firstName         String             @map("first_name")
+  lastName          String             @map("last_name")
+  username          String             @unique
+  email             String             @unique
+  password          String
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  pantryIngredients PantryIngredient[]
+  recipes           Recipe[]
+  mealPlans         MealPlan[]
 }
 
 model Ingredient {
-  id                String       @id @default(uuid())
+  id                String             @id @default(uuid())
   name              String
-  apiId             String       @map("api_id")
+  apiId             String             @map("api_id")
   pantryIngredients PantryIngredient[]
   recipeIngredients RecipeIngredient[]
 }
 
 model PantryIngredient {
-  id            String       @id @default(uuid())
-  ingredientId  String       @map("ingredient_id")
-  userId        String       @map("user_id")
-  quantity      String
-  expirationDate DateTime?   @default(now()) @map("expiration_date")
-  user          User         @relation(fields: [userId], references: [id])
-  ingredient    Ingredient   @relation(fields: [ingredientId], references: [id])
+  id             String     @id @default(uuid())
+  ingredientId   String     @map("ingredient_id")
+  userId         String     @map("user_id")
+  quantity       String
+  expirationDate DateTime?  @default(now()) @map("expiration_date")
+  user           User       @relation(fields: [userId], references: [id])
+  ingredient     Ingredient @relation(fields: [ingredientId], references: [id])
 
   @@map("pantry_ingredient")
 }
 
 model Recipe {
-  id            String            @id @default(uuid())
-  title         String
-  description   String
-  instructions  String[]
-  userId        String            @map("user_id")
-  createdAt     DateTime          @default(now()) @map("created_at")
-  updatedAt     DateTime          @updatedAt @map("updated_at")
-  user          User              @relation(fields: [userId], references: [id])
+  id                String             @id @default(uuid())
+  title             String
+  description       String
+  instructions      String[]
+  userId            String             @map("user_id")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  user              User               @relation(fields: [userId], references: [id])
   recipeIngredients RecipeIngredient[]
-  mealPlans     MealPlan[]
+  mealPlans         MealPlan[]
 }
 
 model RecipeIngredient {
-  id           String            @id @default(uuid())
-  recipeId     String  @map("recipe_id")
-  ingredientId String  @map("ingredient_id")
-  quantity     String
-  recipe       Recipe    @relation(fields: [recipeId], references: [id])
-  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  id                 String     @id @default(uuid())
+  recipeId           String     @map("recipe_id")
+  ingredientId       String     @map("ingredient_id")
+  preparationDetails String?    @map("preparation_details")
+  quantity           String
+  recipe             Recipe     @relation(fields: [recipeId], references: [id])
+  ingredient         Ingredient @relation(fields: [ingredientId], references: [id])
 
   @@map("recipe_ingredient")
 }
 
 model MealPlan {
-  id        String    @id @default(uuid())
-  userId    String    @map("user_id")
-  date      DateTime  @default(now())
-  recipeId  String    @map("recipe_id")
-  user      User      @relation(fields: [userId], references: [id])
-  recipe    Recipe    @relation(fields: [recipeId], references: [id])
+  id       String   @id @default(uuid())
+  userId   String   @map("user_id")
+  date     DateTime @default(now())
+  recipeId String   @map("recipe_id")
+  user     User     @relation(fields: [userId], references: [id])
+  recipe   Recipe   @relation(fields: [recipeId], references: [id])
 
   @@map("meal_plan")
 }

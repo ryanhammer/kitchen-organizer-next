@@ -29,6 +29,18 @@ model Ingredient {
   recipeIngredients RecipeIngredient[]
 }
 
+model BrandedIngredient {
+  id              String @id @default(uuid())
+  apiId           String @map("api_id")
+  description     String
+  brandName       String @map("brand_name")
+  brandOwner      String @map("brand_owner")
+  gtinUpc         String @map("gtin_upc")
+  packageWeight   String @map("package_weight")
+  servingSizeUnit String @map("serving_size_unit")
+  servingSize     Float  @map("serving_size")
+}
+
 model PantryIngredient {
   id             String     @id @default(uuid())
   ingredientId   String     @map("ingredient_id")

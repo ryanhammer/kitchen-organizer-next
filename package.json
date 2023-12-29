@@ -10,7 +10,8 @@
     "start": "next start",
     "format": "npx @biomejs/biome format --write ./src",
     "lint": "next lint",
-    "prod:db:setup": "prisma generate && prisma migrate deploy && prisma db seed"
+    "prod:db:setup": "prisma generate && prisma migrate deploy && prisma db seed",
+    "script:populate-ingredient-and-branded-ingredient-tables": "ts-node --transpile-only -r dotenv/config src/scripts/one-time-scripts/populate-ingredient-and-branded-ingredient-tables.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
@@ -37,6 +38,7 @@
     "postcss": "^8",
     "prisma": "^5.7.1",
     "tailwindcss": "^3.3.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "prisma": {

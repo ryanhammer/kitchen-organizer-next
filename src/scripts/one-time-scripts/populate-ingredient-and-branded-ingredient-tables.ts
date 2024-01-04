@@ -6,11 +6,7 @@ import { PrismaClient } from '@prisma/client';
 
 if (require.main === module) {
   main()
-    .then(() =>
-      console.info(
-        'Initial ingredient and branded ingredient data populated succuessfully.'
-      )
-    )
+    .then(() => console.info('Initial ingredient and branded ingredient data populated succuessfully.'))
     .catch((err) => {
       console.error(err);
       process.exit(1);
@@ -25,7 +21,7 @@ async function main(): Promise<void> {
   const foundationFoods = await fetch(`${apiUrl}&dataType=Foundation`)
     .then((res) => {
       console.log(res.body);
-      return res.json
+      return res.json;
     })
     .catch((err) => {
       throw new Error('Error getting foundation foods from FoodCentral API', err);
@@ -41,12 +37,13 @@ async function main(): Promise<void> {
       throw new Error('Error getting branded foods from FoodCentral API', err);
     });
 
-  const brandedFoods = await foodCentralApiDataManager.getBrandedFoodData()
+  const brandedFoods = await foodCentralApiDataManager
+    .getBrandedFoodData()
     .then((brandedFoods) => {
       if (!brandedFoods) {
         throw new Error('Empty return from brandedFoods json file');
       }
-      
+
       return brandedFoods;
     })
     .catch((err) => {
@@ -57,7 +54,9 @@ async function main(): Promise<void> {
     throw new Error('Abridged branded foods and branded foods are not the same length');
   }
 
-  const brandedIngredients = foodCentralApiDataManager.processAbridgedFoodDataForUpsert(abridgedBrandedFoods as unknown as AbridgedFood[]);
+  const brandedIngredients = foodCentralApiDataManager.processAbridgedFoodDataForUpsert(
+    abridgedBrandedFoods as unknown as AbridgedFood[]
+  );
 
   const processedBrandedFoods = foodCentralApiDataManager.processBrandedFoodDataForUpsert(brandedFoods);
 
@@ -65,10 +64,10 @@ async function main(): Promise<void> {
 
   await client.$transaction([
     client.ingredient.createMany({
-      data: [...foundationIngredients,...brandedIngredients],
+      data: [...foundationIngredients, ...brandedIngredients],
     }),
     client.brandedIngredient.createMany({
       data: processedBrandedFoods,
-    })
+    }),
   ]);
 }

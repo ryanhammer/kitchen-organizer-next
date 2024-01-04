@@ -1,5 +1,5 @@
-import { BrandedIngredient, Ingredient } from "@prisma/client";
-import { AbridgedFood, BrandedFoodJSON } from "../../types/food-central-api";
+import { BrandedIngredient, Ingredient } from '@prisma/client';
+import { AbridgedFood, BrandedFoodJSON } from '../../types/food-central-api';
 import fs from 'fs';
 
 export class FoodCentralApiDataManager {
@@ -31,11 +31,11 @@ export class FoodCentralApiDataManager {
   public async getBrandedFoodData(): Promise<BrandedFoodJSON[] | undefined> {
     const filePath = '../../../assets/data/brandedDownload.json';
     let brandedFoodData;
-    
+
     await fs.readFile(filePath, 'utf8', (err, data) => {
       if (err) throw err;
 
-      const parsedData: {brandedFoods: BrandedFoodJSON[]} = JSON.parse(data);
+      const parsedData: { brandedFoods: BrandedFoodJSON[] } = JSON.parse(data);
 
       brandedFoodData = [...parsedData.brandedFoods];
     });

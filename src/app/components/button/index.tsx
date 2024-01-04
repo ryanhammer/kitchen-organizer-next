@@ -37,15 +37,11 @@ const Element = (props: ButtonProps): JSX.Element => {
   const { href, onClick, ...rest } = props;
 
   return props.href ? (
-    <div className="inline-block">
+    <div className='inline-block'>
       {props.disabled ? (
         <span {...rest}>{props.children}</span>
       ) : (
-        <a
-          {...rest}
-          href={href}
-          target={href?.startsWith('http') ? '_blank' : '_self'}
-        >
+        <a {...rest} href={href} target={href?.startsWith('http') ? '_blank' : '_self'}>
           {props.children}
         </a>
       )}

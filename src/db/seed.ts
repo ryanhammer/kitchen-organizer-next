@@ -1,50 +1,121 @@
-import {faker} from '@faker-js/faker';
-import { PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
+import { Ingredient, PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create a user
+  const password = process.env.DEV_USER_PASSWORD || '<PASSWORD>';
+
+  const hashedPassword = await bcrypt.hash('racheliscool', 10);
+
   const user = await prisma.user.create({
     data: {
-      username: faker.internet.userName(),
-      email: faker.internet.email(),
-      passwordHash: faker.internet.password(),
+      firstName: 'Ryan',
+      lastName: 'Dev',
+      username: 'ryandev',
+      email: 'rdev@test.com',
+      password: hashedPassword,
+      role: 'ADMIN',
     },
   });
 
-  // Create ingredients
-  for (let i = 0; i < 10; i++) {
-    await prisma.ingredient.create({
-      data: {
-        name: faker.commerce.productName(),
-        quantity: faker.number.int({min: 1, max: 10}).toString(),
-        userId: user.id,
-      },
-    });
+  const recipeOneIngredientNames = [
+    'butter',
+    'large egg',
+    'taco seasoning',
+    'shredded Cheddar cheese',
+    '6 inch flour tortilla',
+  ];
+
+  const recipeTwoIngredientNames = [
+    'English cucumber',
+    'low-sodium soy sauce',
+    'can pink salmon',
+    'chile-garlic sauce',
+    'light mayonnaise',
+    'rice vinegar',
+    'cooked white rice',
+    'avocado',
+    'sesame seeds',
+    'chopped green onion',
+  ];
+
+  const recipeThreeIngredientNames = [
+    'olive oil',
+    'boneless pork chops',
+    'taco seasoning',
+    'ground cumin',
+    'smoked paprika',
+    'salt',
+    'chopped onion',
+    'green bell pepper',
+    'cloves garlic',
+    '10-ounce can diced tomatoes and green chilies',
+    'chili powder',
+    'ground black pepper',
+    'chicken broth',
+    'frozen corn',
+    'zucchini',
+    'uncooked rice',
+    'flat-leaf parsley',
+    'cilantro',
+    'lime slices',
+  ];
+
+  function generateIngredientData(ingredientNames: string[]): Ingredient[] {
+    return ingredientNames.map((name) => ({
+      id: faker.string.uuid(),
+      name: name,
+      apiId: faker.number.int({ min: 10000, max: 99999 }),
+    }));
   }
 
-  // Create recipes and associate them with the user
-  for (let i = 0; i < 3; i++) {
-    const recipe = await prisma.recipe.create({
-      data: {
-        title: faker.lorem.words(),
-        description: faker.lorem.paragraph(),
-        userId: user.id,
-      },
-    });
+  const recipeOneIngredients = generateIngredientData(recipeOneIngredientNames);
+  const recipeTwoIngredients = generateIngredientData(recipeTwoIngredientNames);
+  const recipeThreeIngredients = generateIngredientData(recipeThreeIngredientNames);
 
-    // For each recipe, associate some ingredients (for simplicity, using the same ingredients)
-    for (let j = 0; j < 3; j++) {
-      await prisma.recipeIngredient.create({
-        data: {
-          recipeId: recipe.id,
-          ingredientId: (j + 1).toString(), // assuming ingredient IDs are 1 through 10
-          quantity: faker.number.int({min: 1, max: 5}).toString(),
-        },
+  await prisma.ingredient.createMany({
+    data: [...recipeOneIngredients, ...recipeTwoIngredients, ...recipeThreeIngredients],
+  });
+
+  // Create recipes and associate them with the user
+  const recipes = faker.datatype.array(3).map(() => {
+    return {
+      title: faker.lorem.words(),
+      description: faker.lorem.paragraph(),
+      userId: user.id,
+    };
+  });
+
+  await prisma.recipe.createMany({
+    data: recipes,
+  });
+
+  const createdRecipes = await prisma.recipe.findMany();
+
+  const ingredientIds = [
+    recipeOneIngredients.map((ingredient) => ingredient.id),
+    recipeTwoIngredients.map((ingredient) => ingredient.id),
+    recipeThreeIngredients.map((ingredient) => ingredient.id),
+  ];
+
+  // For each recipe, associate some ingredients (for simplicity, using the same ingredients)
+  const recipeIngredientData = [];
+
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < ingredientIds[i].length; j++) {
+      recipeIngredientData.push({
+        recipeId: createdRecipes[i].id,
+        ingredientId: ingredientIds[i][j],
+        quantity: faker.number.int({ min: 1, max: 5 }).toString(),
       });
     }
   }
+
+  await prisma.recipeIngredient.createMany({
+    data: recipeIngredientData,
+  });
 }
 
 main()

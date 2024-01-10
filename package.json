@@ -46,7 +46,7 @@
     "typescript": "^5"
   },
   "prisma": {
-    "schema": "./src/db/schema.prisma",
-    "seed": "ts-node -r tsconfig-paths/register ./src/db/seed.ts"
+    "schema": "./src/prisma/schema.prisma",
+    "seed": "ts-node -r tsconfig-paths/register ./src/prisma/seed.ts"
   }
 }

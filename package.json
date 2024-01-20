@@ -11,10 +11,10 @@
     "dev:db:apply-new-migrations": "prisma migrate dev",
     "build": "next build",
     "start": "next start",
-    "format": "npx @biomejs/biome format --write ./src",
+    "format": "npx @biomejs/biome format --write ./app",
     "lint": "next lint",
     "prod:db:setup": "prisma generate && prisma migrate deploy && prisma db seed",
-    "script:populate-ingredient-and-branded-ingredient-tables": "ts-node --transpile-only -r dotenv/config src/scripts/one-time-scripts/populate-ingredient-and-branded-ingredient-tables.ts"
+    "script:populate-ingredient-and-branded-ingredient-tables": "ts-node --transpile-only -r dotenv/config ./app/lib/scripts/one-time-scripts/populate-ingredient-and-branded-ingredient-tables.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.9.5",
@@ -46,7 +46,7 @@
     "typescript": "^5"
   },
   "prisma": {
-    "schema": "./src/prisma/schema.prisma",
-    "seed": "ts-node -r tsconfig-paths/register ./src/prisma/seed.ts"
+    "schema": "./prisma/schema.prisma",
+    "seed": "ts-node -r tsconfig-paths/register ./prisma/seed.ts"
   }
 }
